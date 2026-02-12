@@ -1,13 +1,13 @@
 cask "ai-manager" do
-  version "0.1.19"
+  version "1.0.0"
 
   on_arm do
-    sha256 "465fe9ce976498d9e7997ba57dfec8564173adaf36a7b765fb0a57e56f621c77"
+    sha256 "0f158f7516073026cf7a4fb58a2aa5bec50124f42082f6be6e0e52cb3a433d7e"
     url "https://github.com/maddada/agent-manager-x/releases/download/v#{version}/AgentManagerX_#{version}_aarch64.dmg"
   end
 
   on_intel do
-    sha256 "cfcfa432916313cbc791b090f69c1aefe5e3b5ecb5bab31ed9f59523fcad2201"
+    sha256 "a71b57bd91b18c6cf10233ad701371dd06bb312c53514c866a63ea6b7185c7bd"
     url "https://github.com/maddada/agent-manager-x/releases/download/v#{version}/AgentManagerX_#{version}_x64.dmg"
   end
 
