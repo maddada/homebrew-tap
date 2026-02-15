@@ -1,5 +1,5 @@
 cask "agent-manager-x" do
-  version "1.1"
+  version "1.4"
 
   on_arm do
     sha256 "3e68cfe79a652c9ea110966fe0566f7a2e249dda5d8394014e6c22412a515aa4"
