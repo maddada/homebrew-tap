@@ -1,13 +1,13 @@
 cask "agent-manager-x-swift" do
-  version "1.0"
+  version "1.1"
 
   on_arm do
-    sha256 "205b69cda0608051578df28ab7d4ecc8c591f79a54c0f866a8d51f3af33a1e8d"
+    sha256 "3e68cfe79a652c9ea110966fe0566f7a2e249dda5d8394014e6c22412a515aa4"
     url "https://github.com/maddada/agent-manager-x-swift/releases/download/v#{version}/AgentManagerX_#{version}_aarch64.dmg"
   end
 
   on_intel do
-    sha256 "b2ddbf4ef3f5d6192ff6cad78f1efec1e2b5edc45b05075611a039922fbaa050"
+    sha256 "4c2fa7e2fc9d210f12413bc5f5fc12778f810c7e020ac11a31ee3de68c8ca05d"
     url "https://github.com/maddada/agent-manager-x-swift/releases/download/v#{version}/AgentManagerX_#{version}_x64.dmg"
   end
 
