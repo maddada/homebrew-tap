@@ -1,6 +1,6 @@
 cask "cardinal-search" do
   version "0.1.23"
-  sha256 "8b62038809d7d69bcb8986d289eda2119261945ede253d14d015c719aec03fd5"
+  sha256 "1c496eb6e5aeded495e88d8993718f173a3c6ed9cfa8cc16a13085cc4e7acae0"
 
   url "https://github.com/maddada/cardinal/releases/download/v#{version}/Cardinal_#{version}_universal.dmg"
   name "Cardinal"
