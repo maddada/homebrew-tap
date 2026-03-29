@@ -1,6 +1,6 @@
 cask "spool-x" do
-  version "0.2.1"
-  sha256 "10ae700f2da43f0a7dd7841326be753a1b00d20be87ed476976a6f2eeaf41a5e"
+  version "0.2.2"
+  sha256 "6a879fdbb1e6668e2deb69341d0db5283f6d54a01e26bed9cba66827d5024e5b"
 
   url "https://github.com/maddada/spool/releases/download/v#{version}/Spool-#{version}-arm64.dmg"
   name "Spool"
