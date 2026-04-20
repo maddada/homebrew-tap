@@ -1,13 +1,13 @@
 cask "agent-manager-x" do
-  version "2.3"
+  version "2.4"
 
   on_arm do
-    sha256 "3e61c32f4854f894084451ea67a64eb6c8dc2205dfc59553193b03477a02d142"
+    sha256 "f7a5e33d9d79e0c2c622b9fc7d1677cbc2e0a6405b9b48c577969b863942c559"
     url "https://github.com/maddada/agent-manager-x/releases/download/v#{version}/AgentManagerX_#{version}_aarch64.dmg"
   end
 
   on_intel do
-    sha256 "330a880297b9ae9146eb298908d85f987d43a7f1b844a5529a1739f455a69f26"
+    sha256 "264056d64335f6ecf6c58e11c27bf34f2a8257119bbc9c7a392091f85e8d3654"
     url "https://github.com/maddada/agent-manager-x/releases/download/v#{version}/AgentManagerX_#{version}_x64.dmg"
   end
 
