@@ -1,6 +1,6 @@
 cask "stats" do
-  version "3.0.0"
-  sha256 "c94c906c45f79465a8d46bdae05ab9d4573d322b43ffac8067ff1700bda1f63b"
+  version "3.1.0"
+  sha256 "05c5146398758dbf5bc28fff7d84c9c833a7b2801e3c275fc27b9f6f5ec8a036"
 
   url "https://github.com/maddada/stats/releases/download/v#{version}/Stats.dmg"
   name "Stats"
