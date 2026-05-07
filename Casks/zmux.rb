@@ -1,6 +1,6 @@
 cask "zmux" do
-  version "1.4.8"
-  sha256 "bdc2256445848c44f069830df5d1a565e7e5b61b9b43c053074bde07ab8d4249"
+  version "1.4.9"
+  sha256 "d5c407008e680ad0f187c71ab7f16a19b912b06c3812ac32d6f4f5cc54cbc882"
 
   url "https://github.com/maddada/zmux/releases/download/v#{version}/zmux-#{version}.dmg"
   name "zmux"
