@@ -1,8 +1,8 @@
 cask "zmux" do
-  version "1.4.11"
-  sha256 "44c8431280ed83907174f9192ae2623250af9da3c71b60a064de337782fa3462"
+  version "2.0.0"
+  sha256 "da519a720e65a955ce182f0655ba36a6cb02c188aab441142dc2bf9747f70456"
 
-  url "https://github.com/maddada/zmux/releases/download/v#{version}/zmux-#{version}.dmg"
+  url "https://github.com/maddada/zmux/releases/download/v2.0/zmux-#{version}.dmg"
   name "zmux"
   desc "Workspace and session UI for agent terminals"
   homepage "https://github.com/maddada/zmux"
