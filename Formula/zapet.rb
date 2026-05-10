@@ -4,8 +4,8 @@ class Zapet < Formula
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/maddada/zapet/releases/download/zapet-v0.3.5/zapet-0.3.5-aarch64-apple-darwin.tar.gz"
-      sha256 "68fed5765a95180d5325a057d5c77b600265b6d4a9490783205237e132ba131a"
+      url "https://github.com/maddada/zapet/releases/download/zapet-v0.3.6/zapet-0.3.6-aarch64-apple-darwin.tar.gz"
+      sha256 "0cc90d848d8643dd6dbb48e8d37f34da38b66a8112855885b7c9cfd670d3ac9c"
     else
       odie "zapet currently provides a prebuilt Homebrew formula only for Apple Silicon macOS"
     end
