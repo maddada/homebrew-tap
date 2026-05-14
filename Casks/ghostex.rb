@@ -7,10 +7,9 @@ cask "ghostex" do
   desc "Workspace and session UI for agent terminals"
   homepage "https://github.com/maddada/Ghostex"
 
+  conflicts_with cask: "zmux"
   depends_on arch: :arm64
   depends_on macos: ">= :ventura"
-
-  conflicts_with cask: "zmux"
 
   app "Ghostex.app"
 
