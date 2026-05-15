@@ -1,9 +1,9 @@
 cask "ghostex" do
   arch arm: "arm64", intel: "x86_64"
 
-  version "2.7.0"
-  sha256 arm:   "0c85232af064f8696c47cfe7be264010667831ee6471465d36534f20fc689553",
-         intel: "fd6a139ea0c98de6570500ed5a7f67071242c69058659ea72dce59b9c1a7f563"
+  version "3.0.0"
+  sha256 arm:   "94fac816834529fd04f7a6e76ee972e25c2e15ae3c484e3fdc787692d92ec9af",
+         intel: "818cf52353e7d73ddf5ed74b4ecb2c0d6396f31379a2b024ba36d1f85d069f12"
 
   url "https://github.com/maddada/Ghostex/releases/download/v#{version}/ghostex-#{version}-#{arch}.dmg"
   name "Ghostex"
@@ -13,7 +13,9 @@ cask "ghostex" do
   conflicts_with cask: "zmux"
   depends_on macos: :ventura
 
-  app "Ghostex.app"
+  app "ghostex.app"
+  binary "#{appdir}/ghostex.app/Contents/Resources/Web/cli/ghostex"
+  binary "#{appdir}/ghostex.app/Contents/Resources/Web/cli/gtx"
 
   zap trash: [
     "~/Library/Application Support/com.madda.zmux.host",
