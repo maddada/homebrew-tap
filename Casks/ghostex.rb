@@ -1,11 +1,11 @@
 cask "ghostex" do
   arch arm: "arm64", intel: "x86_64"
 
-  version "2.5.0"
-  sha256 arm:   "ebbf925a8765990b5f6b18b466a6f7e824dfc88b1dbb9046fbbd72d97a7d1c06",
-         intel: "0625820cc69c570f077b0490a1e265876f6a35580d6348703d57e329f1b46f1c"
+  version "2.5.1"
+  sha256 arm:   "17f911e10f85d164a6b3009a1a7e877e3d474ffe9be09e48ab1b67f1cbc299be",
+         intel: "47c42aaa63d12e539aecdfe0249e794ba0460606e6f211822127fd9d0297091b"
 
-  url "https://github.com/maddada/Ghostex/releases/download/v#{version.major_minor}/ghostex-#{version}-#{arch}.dmg"
+  url "https://github.com/maddada/Ghostex/releases/download/v#{version}/ghostex-#{version}-#{arch}.dmg"
   name "Ghostex"
   desc "Workspace and session UI for agent terminals"
   homepage "https://github.com/maddada/Ghostex"
