@@ -4,8 +4,8 @@ class Gte < Formula
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/maddada/zpet/releases/download/gte-v0.3.8/gte-0.3.8-aarch64-apple-darwin.tar.gz"
-      sha256 "6bd8adb029e0d2e6b589b15d857deae5c7631bbf48ad5bf017072560c592306d"
+      url "https://github.com/maddada/zpet/releases/download/gte-v0.3.9/gte-0.3.9-aarch64-apple-darwin.tar.gz"
+      sha256 "4a5e7c712219602deb0302872d6838365be135fe8b8b2e83fa9e4dd73e3a54c6"
     else
       odie "gte currently provides a prebuilt Homebrew formula only for Apple Silicon macOS"
     end
@@ -14,8 +14,10 @@ class Gte < Formula
   def install
     # CDXC:GteHomebrew 2026-05-23-01:14:
     # Ghostex installs gte through maddada/tap/gte when users select the Ctrl+G terminal editor.
-    # The 0.3.8 artifact is the first release that ships real `gte` and `gte-ssh-image`
-    # executables, so install them directly instead of aliasing old zapet binary names.
+    # The 0.3.9 artifact includes the Ghostex-default gte settings, inline hotkey footer,
+    # and Mac shortcut handling that should be available through `brew upgrade gte`.
+    # Install the real `gte` and `gte-ssh-image` executables directly instead of aliasing
+    # old zapet binary names.
     bin.install "gte"
     bin.install "gte-ssh-image"
   end
