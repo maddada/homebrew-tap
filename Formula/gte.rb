@@ -4,31 +4,30 @@ class Gte < Formula
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/maddada/zpet/releases/download/zapet-v0.3.7/zapet-0.3.7-aarch64-apple-darwin.tar.gz"
-      sha256 "2bc346c22f117d8eab7a7e8933d5d24189380595541acedc48e1b21e06a16487"
+      url "https://github.com/maddada/zpet/releases/download/gte-v0.3.8/gte-0.3.8-aarch64-apple-darwin.tar.gz"
+      sha256 "6bd8adb029e0d2e6b589b15d857deae5c7631bbf48ad5bf017072560c592306d"
     else
       odie "gte currently provides a prebuilt Homebrew formula only for Apple Silicon macOS"
     end
   end
 
   def install
-    # CDXC:GteHomebrew 2026-05-22-10:27:
+    # CDXC:GteHomebrew 2026-05-23-01:14:
     # Ghostex installs gte through maddada/tap/gte when users select the Ctrl+G terminal editor.
-    # The first gte formula reuses the last compatible pre-rename artifact and
-    # exposes renamed commands so Ghostex can launch `gte` inline until the
-    # standalone gte release pipeline publishes native gte artifacts.
-    bin.install "zapet" => "gte"
-    bin.install "zapet-ssh-image" => "gte-ssh-image"
+    # The 0.3.8 artifact is the first release that ships real `gte` and `gte-ssh-image`
+    # executables, so install them directly instead of aliasing old zapet binary names.
+    bin.install "gte"
+    bin.install "gte-ssh-image"
   end
 
   def caveats
     <<~EOS
-      Release notes: https://github.com/maddada/zpet/releases/tag/zapet-v#{version}
+      Release notes: https://github.com/maddada/zpet/releases/tag/gte-v#{version}
     EOS
   end
 
   test do
-    assert_match "zapet", shell_output("#{bin}/gte --version")
-    assert_match "Usage: zapet-ssh-image", shell_output("#{bin}/gte-ssh-image --help")
+    assert_match "gte", shell_output("#{bin}/gte --version")
+    assert_match "Usage: gte-ssh-image", shell_output("#{bin}/gte-ssh-image --help")
   end
 end
