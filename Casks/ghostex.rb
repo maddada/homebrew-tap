@@ -1,9 +1,9 @@
 cask "ghostex" do
   arch arm: "arm64", intel: "x86_64"
 
-  version "3.13.0"
-  sha256 arm:   "1ba33cefa34c6973793b2f28ae8a41372e0dda7df8d57c90729900cf0ee287e1",
-         intel: "229769eb83c2eebeca53db647055f8d25dcc880c768ba17182361eba8ac8aaef"
+  version "3.14.0"
+  sha256 arm:   "328da81f2b53be9ef89a86c03e8b1b38190092d1ef8081ed76499265fe023b19",
+         intel: "8985f2ee05fb8629017e9a9608216828614c70a76cfd8c3fbd2ba5c5e124d17c"
 
   url "https://github.com/maddada/Ghostex/releases/download/v#{version}/ghostex-#{version}-#{arch}.dmg"
   name "Ghostex"
@@ -15,7 +15,25 @@ cask "ghostex" do
 
   app "ghostex.app"
   binary "#{appdir}/ghostex.app/Contents/Resources/Web/cli/ghostex"
-  binary "#{appdir}/ghostex.app/Contents/Resources/Web/cli/gtx"
+  binary "#{appdir}/ghostex.app/Contents/Resources/Web/cli/gx"
+
+  # CDXC:CliBranding 2026-05-26-15:11: Install gx only when another tool does not already own that command name.
+  preflight do
+    gx_candidates = [HOMEBREW_PREFIX/"bin/gx"]
+    ENV.fetch("PATH", "").split(File::PATH_SEPARATOR).each do |entry|
+      gx_candidates << (Pathname(entry)/"gx") unless entry.empty?
+    end
+
+    gx_candidates.uniq.each do |gx_path|
+      next if [gx_path.exist?, gx_path.symlink?].none?
+
+      gx_target = gx_path.symlink? ? gx_path.readlink.to_s : gx_path.to_s
+      next if gx_target.include?("ghostex.app/Contents/Resources/Web/cli/gx")
+
+      raise "Ghostex cannot install the gx CLI because #{gx_path} already exists. " \
+            "Remove or rename the existing gx command, then reinstall Ghostex."
+    end
+  end
 
   zap trash: [
     "~/Library/Application Support/com.madda.zmux.host",
