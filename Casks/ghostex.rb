@@ -1,9 +1,9 @@
 cask "ghostex" do
   arch arm: "arm64", intel: "x86_64"
 
-  version "3.26.2"
-  sha256 arm:   "a6770d3020ba17db0c46bd48d131e80cffc25681925b4f01e1893c14d899ccfa",
-         intel: "7bd31b13f8ce8b29b7d99d8a184fcb3fd9f913f778e82faed5714e6c27cd72f0"
+  version "4.0.0-beta.1"
+  sha256 arm:   "9712c52e68865f641c411134d4605bdf9119ffd7b10cafd2379b091f603d1132",
+         intel: "585af6fc3084a9cfa8dbd69a19a9e6be0f5e10758842ecf97b952d3e33e193ed"
 
   url "https://github.com/maddada/Ghostex/releases/download/v#{version}/ghostex-#{version}-#{arch}.dmg"
   name "Ghostex"
