@@ -1,9 +1,9 @@
 cask "ghostex" do
   arch arm: "arm64", intel: "x86_64"
 
-  version "4.0.0-beta.2"
-  sha256 arm:   "0d40a91635a66cc041cb1bca771d9febab4a4e08f5191db5d1b1c3acf98a3541",
-         intel: "ff1c561b49853ddf0633aefdcbda61f2b1cd2de87fb0bacf64117d92596dc7d1"
+  version "4.0.0"
+  sha256 arm:   "6ee413b3cd0e2279a16a1cdd49b015c3d06382c2678833e3aa315dc7bf5de4d1",
+         intel: "d4b1f212775fefd7350ef3ac778b7f6f52969d3de7b41d66206906909bf9967f"
 
   url "https://github.com/maddada/Ghostex/releases/download/v#{version}/ghostex-#{version}-#{arch}.dmg"
   name "Ghostex"
@@ -18,10 +18,12 @@ cask "ghostex" do
   depends_on macos: ">= :ventura"
 
   app "ghostex.app"
-  binary "#{appdir}/ghostex.app/Contents/Resources/Web/cli/ghostex"
-  binary "#{appdir}/ghostex.app/Contents/Resources/Web/cli/gx"
+  binary "#{appdir}/ghostex.app/Contents/Resources/CLI/ghostex"
+  binary "#{appdir}/ghostex.app/Contents/Resources/CLI/gx"
 
   # CDXC:CliBranding 2026-05-26-15:11: Install gx only when another tool does not already own that command name.
+  # CDXC:CliInstall 2026-06-07-13:53: Homebrew links the app-owned CLI from
+  # Contents/Resources/CLI, matching direct DMG auto-linking.
   preflight do
     gx_candidates = [HOMEBREW_PREFIX/"bin/gx"]
     ENV.fetch("PATH", "").split(File::PATH_SEPARATOR).each do |entry|
@@ -32,7 +34,7 @@ cask "ghostex" do
       next if [gx_path.exist?, gx_path.symlink?].none?
 
       gx_target = gx_path.symlink? ? gx_path.readlink.to_s : gx_path.to_s
-      next if gx_target.include?("ghostex.app/Contents/Resources/Web/cli/gx")
+      next if gx_target.include?("ghostex.app/Contents/Resources/CLI/gx")
 
       raise "Ghostex cannot install the gx CLI because #{gx_path} already exists. " \
             "Remove or rename the existing gx command, then reinstall Ghostex."
