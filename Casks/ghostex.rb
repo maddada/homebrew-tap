@@ -1,11 +1,8 @@
 cask "ghostex" do
-  arch arm: "arm64", intel: "x86_64"
+  version "4.1.5"
+  sha256 "9970d86abdd3a6201079b50909c7a87b9a847e9f0f3b685f6d2efb20d4f371e4"
 
-  version "4.1.0"
-  sha256 arm:   "1bf4f923861a107460803cc64a87cb15ded356a39462c1f6ff962d0d7298a38e",
-         intel: "e011b8852153eb13af8823c87fc3de6e01df709a261dbd7d579b2de861556142"
-
-  url "https://github.com/maddada/Ghostex/releases/download/v#{version}/ghostex-#{version}-#{arch}.dmg"
+  url "https://github.com/maddada/Ghostex/releases/download/v#{version}/ghostex-#{version}-arm64.dmg"
   name "Ghostex"
   desc "Workspace and session UI for agent terminals"
   homepage "https://github.com/maddada/Ghostex"
@@ -15,6 +12,7 @@ cask "ghostex" do
   # Homebrew clients treat macOS 13 Ventura as the minimum supported version,
   # not the only supported version, while newer Homebrew still parses the same
   # floor.
+  depends_on arch: :arm64
   depends_on macos: ">= :ventura"
 
   app "ghostex.app"
