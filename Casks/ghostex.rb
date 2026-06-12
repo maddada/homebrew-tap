@@ -1,6 +1,6 @@
 cask "ghostex" do
-  version "4.1.5"
-  sha256 "9970d86abdd3a6201079b50909c7a87b9a847e9f0f3b685f6d2efb20d4f371e4"
+  version "4.10.0"
+  sha256 "0e397fe85ca1eff33f36b1ef77555419ab54e5b5d26dc2dfe39def0656578904"
 
   url "https://github.com/maddada/Ghostex/releases/download/v#{version}/ghostex-#{version}-arm64.dmg"
   name "Ghostex"
@@ -16,26 +16,76 @@ cask "ghostex" do
   depends_on macos: ">= :ventura"
 
   app "ghostex.app"
-  binary "#{appdir}/ghostex.app/Contents/Resources/CLI/ghostex"
-  binary "#{appdir}/ghostex.app/Contents/Resources/CLI/gx"
 
   # CDXC:CliBranding 2026-05-26-15:11: Install gx only when another tool does not already own that command name.
-  # CDXC:CliInstall 2026-06-07-13:53: Homebrew links the app-owned CLI from
-  # Contents/Resources/CLI, matching direct DMG auto-linking.
+  # CDXC:CliInstall 2026-06-12-09:31: Homebrew writes wrapper files in
+  # HOMEBREW_PREFIX/bin instead of binary symlinks into Ghostex.app because
+  # macOS can kill direct app-bundled script execution during policy assessment.
   preflight do
-    gx_candidates = [HOMEBREW_PREFIX/"bin/gx"]
-    ENV.fetch("PATH", "").split(File::PATH_SEPARATOR).each do |entry|
-      gx_candidates << (Pathname(entry)/"gx") unless entry.empty?
+    commands = ["ghostex", "gx"]
+    commands.each do |command|
+      command_candidates = [HOMEBREW_PREFIX/"bin/#{command}"]
+      ENV.fetch("PATH", "").split(File::PATH_SEPARATOR).each do |entry|
+        command_candidates << (Pathname(entry)/command) unless entry.empty?
+      end
+
+      command_candidates.uniq.each do |command_path|
+        next if [command_path.exist?, command_path.symlink?].none?
+
+        command_target = command_path.symlink? ? command_path.readlink.to_s : command_path.to_s
+        command_content = command_path.file? ? command_path.read : ""
+        if command_content.include?("CDXC:CliInstall 2026-06-12-09:31") && command_content.include?("ghostex-cli.mjs")
+          next
+        end
+        next if command_target.include?("ghostex.app/Contents/Resources/CLI/#{command}")
+        next if command_target.include?("ghostex.app/Contents/Resources/Web/cli/#{command}")
+        next if command == "ghostex" && command_target.include?("ghostex.app/Contents/MacOS/ghostex")
+
+        raise "Ghostex cannot install the #{command} CLI because #{command_path} already exists. " \
+              "Remove or rename the existing #{command} command, then reinstall Ghostex."
+      end
     end
+  end
 
-    gx_candidates.uniq.each do |gx_path|
-      next if [gx_path.exist?, gx_path.symlink?].none?
+  postflight do
+    cli_script = "#{appdir}/ghostex.app/Contents/Resources/CLI/ghostex-cli.mjs"
+    bin_dir = HOMEBREW_PREFIX/"bin"
+    policy_attributes = ["com.apple.provenance", "com.apple.quarantine"]
+    bin_dir.mkpath
 
-      gx_target = gx_path.symlink? ? gx_path.readlink.to_s : gx_path.to_s
-      next if gx_target.include?("ghostex.app/Contents/Resources/CLI/gx")
+    ["ghostex", "gx"].each do |command|
+      command_path = bin_dir/command
+      if command_path.symlink?
+        command_path.delete
+      elsif command_path.exist?
+        command_content = command_path.file? ? command_path.read : ""
+        if command_content.include?("CDXC:CliInstall 2026-06-12-09:31") && command_content.include?("ghostex-cli.mjs")
+          command_path.delete
+        end
+      end
 
-      raise "Ghostex cannot install the gx CLI because #{gx_path} already exists. " \
-            "Remove or rename the existing gx command, then reinstall Ghostex."
+      command_path.write <<~EOS
+        #!/bin/bash
+        set -euo pipefail
+        # CDXC:CliInstall 2026-06-12-09:31: Public PATH commands live outside Ghostex.app so macOS does not directly execute app-bundled shell scripts during policy assessment.
+        exec /usr/bin/env node "#{cli_script}" "$@"
+      EOS
+      command_path.chmod 0755
+      policy_attributes.each do |attribute|
+        system "/usr/bin/xattr", "-d", attribute, command_path.to_s, out: File::NULL, err: File::NULL
+      end
+    end
+  end
+
+  uninstall_preflight do
+    ["ghostex", "gx"].each do |command|
+      command_path = HOMEBREW_PREFIX/"bin/#{command}"
+      next if !command_path.exist? || !command_path.file?
+
+      command_content = command_path.read
+      if command_content.include?("CDXC:CliInstall 2026-06-12-09:31") && command_content.include?("ghostex-cli.mjs")
+        command_path.delete
+      end
     end
   end
 
