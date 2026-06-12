@@ -7,7 +7,7 @@ cask "hotkeys-organizer" do
   desc "macOS menu bar app for organizing and quick-accessing keyboard shortcuts"
   homepage "https://github.com/maddada/hotkeys-organizer-swift"
 
-  depends_on macos: ">= :sonoma"
+  depends_on macos: :sonoma
 
   app "HotkeysOrganizer.app"
 

@@ -16,7 +16,7 @@ cask "agent-manager-x" do
   desc "Native SwiftUI app to monitor AI coding agent sessions"
   homepage "https://github.com/maddada/agent-manager-x"
 
-  depends_on macos: ">= :monterey"
+  depends_on macos: :monterey
 
   app "Agent Manager X.app"
 
