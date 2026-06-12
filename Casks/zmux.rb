@@ -7,7 +7,7 @@ cask "zmux" do
   desc "Workspace and session UI for agent terminals"
   homepage "https://github.com/maddada/zmux"
 
-  depends_on macos: ">= :ventura"
+  depends_on macos: :ventura
 
   app "zmux.app"
 
