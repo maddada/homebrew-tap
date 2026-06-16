@@ -1,8 +1,11 @@
 cask "ghostex" do
-  version "4.14.0"
-  sha256 "909b476759d11082a16a4e60d678c406f7d8efd5ab53cc35c267ad566265c0a0"
+  version "4.14.1"
+  sha256 "2d6a1078f1edc1b9011779fe369a8b5c1310ee1e7754bbfb11c1389c33ddcf26"
 
-  url "https://github.com/maddada/Ghostex/releases/download/v#{version}/ghostex-#{version}-arm64.dmg"
+  # CDXC:MacRelease 2026-06-16-22:09:
+  # The 4.14.1 package is a tiny refresh grouped under the 4.14.0 GitHub release,
+  # so Homebrew advances the cask version while downloading from the v4.14.0 release tag.
+  url "https://github.com/maddada/Ghostex/releases/download/v4.14.0/ghostex-#{version}-arm64.dmg"
   name "Ghostex"
   desc "Workspace and session UI for agent terminals"
   homepage "https://github.com/maddada/Ghostex"
