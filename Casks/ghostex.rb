@@ -1,6 +1,6 @@
 cask "ghostex" do
-  version "4.12.0"
-  sha256 "b99f5983287746d9a7b8d8d05c9aaafbcf1b2ea11e09be22df69d5db8dbab2a2"
+  version "4.14.0"
+  sha256 "909b476759d11082a16a4e60d678c406f7d8efd5ab53cc35c267ad566265c0a0"
 
   url "https://github.com/maddada/Ghostex/releases/download/v#{version}/ghostex-#{version}-arm64.dmg"
   name "Ghostex"
@@ -21,6 +21,8 @@ cask "ghostex" do
   # CDXC:CliInstall 2026-06-12-09:31: Homebrew writes wrapper files in
   # HOMEBREW_PREFIX/bin instead of binary symlinks into Ghostex.app because
   # macOS can kill direct app-bundled script execution during policy assessment.
+  # CDXC:HomebrewRelease 2026-06-16-20:54: Keep preflight errors wrapped so
+  # automated tap pushes pass brew style after publication.
   preflight do
     commands = ["ghostex", "gx"]
     commands.each do |command|
@@ -41,8 +43,10 @@ cask "ghostex" do
         next if command_target.include?("ghostex.app/Contents/Resources/Web/cli/#{command}")
         next if command == "ghostex" && command_target.include?("ghostex.app/Contents/MacOS/ghostex")
 
-        raise "Ghostex cannot install the #{command} CLI because #{command_path} already exists. " \
-              "Remove or rename the existing #{command} command, then reinstall Ghostex."
+        raise [
+          "Ghostex cannot install the #{command} CLI because #{command_path} already exists.",
+          "Remove or rename the existing #{command} command, then reinstall Ghostex.",
+        ].join(" ")
       end
     end
   end
