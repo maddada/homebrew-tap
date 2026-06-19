@@ -7,7 +7,7 @@ cask "cardinal-x" do
   desc "Fast file search app for macOS"
   homepage "https://github.com/maddada/cardinal"
 
-  depends_on macos: ">= :monterey"
+  depends_on macos: :monterey
 
   app "Cardinal X.app"
 

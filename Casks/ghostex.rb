@@ -8,12 +8,11 @@ cask "ghostex" do
   homepage "https://github.com/maddada/Ghostex"
 
   conflicts_with cask: "zmux"
-  # CDXC:MacRelease 2026-05-29-20:59: Keep the explicit >= form so older
-  # Homebrew clients treat macOS 13 Ventura as the minimum supported version,
-  # not the only supported version, while newer Homebrew still parses the same
-  # floor.
+  # CDXC:MacRelease 2026-05-29-20:59: Keep Ventura as the minimum
+  # supported version using Homebrew symbol syntax to avoid deprecated
+  # string-comparison warnings.
   depends_on arch: :arm64
-  depends_on macos: ">= :ventura"
+  depends_on macos: :ventura
 
   app "ghostex.app"
 
