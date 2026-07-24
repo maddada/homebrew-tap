@@ -35,7 +35,9 @@ cask "ghostex" do
 
         command_target = command_path.symlink? ? command_path.readlink.to_s : command_path.to_s
         command_content = command_path.file? ? command_path.read : ""
-        if command_content.include?("CDXC:CliInstall 2026-06-12-09:31") && command_content.include?("ghostex-cli.mjs")
+        if command_content.include?("CDXC:CliInstall 2026-06-12-09:31") &&
+           (command_content.include?("ghostex-cli.mjs") ||
+            command_content.include?("/Resources/CLI/ghostex"))
           next
         end
         next if command_target.include?("ghostex.app/Contents/Resources/CLI/#{command}")
@@ -51,7 +53,7 @@ cask "ghostex" do
   end
 
   postflight do
-    cli_script = "#{appdir}/ghostex.app/Contents/Resources/CLI/ghostex-cli.mjs"
+    cli_binary = "#{appdir}/ghostex.app/Contents/Resources/CLI/ghostex"
     bin_dir = HOMEBREW_PREFIX/"bin"
     policy_attributes = ["com.apple.provenance", "com.apple.quarantine"]
     bin_dir.mkpath
@@ -62,7 +64,9 @@ cask "ghostex" do
         command_path.delete
       elsif command_path.exist?
         command_content = command_path.file? ? command_path.read : ""
-        if command_content.include?("CDXC:CliInstall 2026-06-12-09:31") && command_content.include?("ghostex-cli.mjs")
+        if command_content.include?("CDXC:CliInstall 2026-06-12-09:31") &&
+           (command_content.include?("ghostex-cli.mjs") ||
+            command_content.include?("/Resources/CLI/ghostex"))
           command_path.delete
         end
       end
@@ -71,7 +75,7 @@ cask "ghostex" do
         #!/bin/bash
         set -euo pipefail
         # CDXC:CliInstall 2026-06-12-09:31: Public PATH commands live outside Ghostex.app so macOS does not directly execute app-bundled shell scripts during policy assessment.
-        exec /usr/bin/env node "#{cli_script}" "$@"
+        exec "#{cli_binary}" "$@"
       EOS
       command_path.chmod 0755
       policy_attributes.each do |attribute|
@@ -86,9 +90,13 @@ cask "ghostex" do
       next if !command_path.exist? || !command_path.file?
 
       command_content = command_path.read
-      if command_content.include?("CDXC:CliInstall 2026-06-12-09:31") && command_content.include?("ghostex-cli.mjs")
-        command_path.delete
-      end
+      ghostex_owned_wrapper =
+        command_content.include?("CDXC:CliInstall 2026-06-12-09:31") &&
+        (command_content.include?("ghostex-cli.mjs") ||
+         command_content.include?("/Resources/CLI/ghostex"))
+      next unless ghostex_owned_wrapper
+
+      command_path.delete
     end
   end
 
