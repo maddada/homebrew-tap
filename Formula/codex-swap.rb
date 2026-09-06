@@ -1,7 +1,7 @@
 class CodexSwap < Formula
   desc "Run Codex under different accounts with shared conversation history"
   homepage "https://github.com/maddada/codex-swap"
-  version "0.2.0"
+  version "0.3.0"
   license "MIT"
 
   # CDXC:Release 2026-09-06 DECISION:
@@ -11,24 +11,24 @@ class CodexSwap < Formula
 
     on_arm do
       url "https://github.com/maddada/codex-swap/releases/download/v#{version}/codex-swap-#{version}-aarch64-apple-darwin.tar.gz"
-      sha256 "47b53139bff1a2ae5d37f717994e886371a68d8b0fa0560df9c6f11a4dd7bc6b"
+      sha256 "bb17317b2c3599c6de2243b437736f451349532a66198ca667cb7ae641eff089"
     end
 
     on_intel do
       url "https://github.com/maddada/codex-swap/releases/download/v#{version}/codex-swap-#{version}-x86_64-apple-darwin.tar.gz"
-      sha256 "aa146bf3e22a1283629e17ffd99da99f3ce0708e4eb408c324175de120627de6"
+      sha256 "74e77961946283f6ba01ec13ce93aacfdd20cd7f67f101f8e22b2365351bbab4"
     end
   end
 
   on_linux do
     on_arm do
       url "https://github.com/maddada/codex-swap/releases/download/v#{version}/codex-swap-#{version}-aarch64-unknown-linux-musl.tar.gz"
-      sha256 "f56331b814d2ee5b79d5e4b3949fe406c599eb195ee91504d2500bd2a91dcfc1"
+      sha256 "f140bccaef7ff5a430ac556254fbe6d57e857c4672e7d6f2ac7fe9a213f61bfb"
     end
 
     on_intel do
       url "https://github.com/maddada/codex-swap/releases/download/v#{version}/codex-swap-#{version}-x86_64-unknown-linux-musl.tar.gz"
-      sha256 "bd6aa85a00d1012f1731e92de937bfa5321fe423fbb1f45f96a1c526b4ea1df2"
+      sha256 "a3bba326ec541f585df566e9f685c5340ca64f2d175bee7b3d9da6da3573982c"
     end
   end
 
@@ -40,7 +40,7 @@ class CodexSwap < Formula
   def caveats
     <<~EOS
       Install the official Codex CLI separately and make sure codex is on PATH.
-      Get started: xswap add --login --share-history
+      Get started: codex login, then xswap add --alias personal
     EOS
   end
 end
