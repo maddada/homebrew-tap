@@ -1,9 +1,9 @@
 cask "clipbook-rs" do
-  version "0.1.1"
-  sha256 "f4e45020f73a453edb5723c3d66964e81967d55cebb3d4e30297cb7a7b56cf65"
+  version "0.1.2"
+  sha256 "9dee7be5ad6911d2641efeb9e4f3d41d45d7e4c5841b4f2b127084b6bfeeda2d"
 
   # Resolve credentials at install time; source and release downloads stay private.
-  url "https://api.github.com/repos/maddada/clipbook-rs/releases/assets/547884079",
+  url "https://api.github.com/repos/maddada/clipbook-rs/releases/assets/548066881",
       header: ["Accept: application/octet-stream", "Authorization: Bearer #{GitHub::API.credentials}"]
   name "ClipBook Rust"
   desc "Clipboard history manager built with Rust and GPUI Kit"
