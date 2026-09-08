@@ -1,7 +1,7 @@
 class CodexSwap < Formula
   desc "Run Codex under different accounts with shared conversation history"
   homepage "https://github.com/maddada/codex-swap"
-  version "0.3.0"
+  version "0.3.1"
   license "MIT"
 
   # CDXC:Release 2026-09-06 DECISION:
@@ -11,24 +11,24 @@ class CodexSwap < Formula
 
     on_arm do
       url "https://github.com/maddada/codex-swap/releases/download/v#{version}/codex-swap-#{version}-aarch64-apple-darwin.tar.gz"
-      sha256 "bb17317b2c3599c6de2243b437736f451349532a66198ca667cb7ae641eff089"
+      sha256 "afeeff47b5d6cc473d917b17c82c6a93a25e7a20625e5c09f3919b73ee6a4d2b"
     end
 
     on_intel do
       url "https://github.com/maddada/codex-swap/releases/download/v#{version}/codex-swap-#{version}-x86_64-apple-darwin.tar.gz"
-      sha256 "74e77961946283f6ba01ec13ce93aacfdd20cd7f67f101f8e22b2365351bbab4"
+      sha256 "96d2291d9de34b56265c98da86b879071f11cc4a4b36150c0506e710f5557cc0"
     end
   end
 
   on_linux do
     on_arm do
       url "https://github.com/maddada/codex-swap/releases/download/v#{version}/codex-swap-#{version}-aarch64-unknown-linux-musl.tar.gz"
-      sha256 "f140bccaef7ff5a430ac556254fbe6d57e857c4672e7d6f2ac7fe9a213f61bfb"
+      sha256 "d74e8e610a23cab40c7eafec5499afc5d4a287f65162ab36c60a913c64b07f3f"
     end
 
     on_intel do
       url "https://github.com/maddada/codex-swap/releases/download/v#{version}/codex-swap-#{version}-x86_64-unknown-linux-musl.tar.gz"
-      sha256 "a3bba326ec541f585df566e9f685c5340ca64f2d175bee7b3d9da6da3573982c"
+      sha256 "f77b9e5f875c6773ba8681d9c8dc1af12d846bb2f71d7064563c1d853254f0c8"
     end
   end
 
