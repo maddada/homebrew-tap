@@ -8,96 +8,129 @@ cask "ghostex" do
   homepage "https://github.com/maddada/Ghostex"
 
   conflicts_with cask: "zmux"
-  # CDXC:MacRelease 2026-06-21-13:20: GitHub issue #49 showed current
+  # CDXC:Release 2026-06-21-13:20: GitHub issue #49 showed current
   # Homebrew treats the symbol form as the Ventura-or-newer floor, so keep this
   # syntax to avoid a warning on every brew invocation.
   depends_on arch: :arm64
   depends_on macos: :ventura
 
   app "ghostex.app"
-
-  # CDXC:CliBranding 2026-05-26-15:11: Install gx only when another tool does not already own that command name.
-  # CDXC:CliInstall 2026-06-12-09:31: Homebrew writes wrapper files in
+  # CDXC:Cli 2026-05-26-15:11: Install gx only when another tool does not already own that command name.
+  # CDXC:Cli 2026-06-12-09:31: Homebrew writes wrapper files in
   # HOMEBREW_PREFIX/bin instead of binary symlinks into Ghostex.app because
   # macOS can kill direct app-bundled script execution during policy assessment.
-  # CDXC:HomebrewRelease 2026-06-16-20:54: Keep preflight errors wrapped so
-  # automated tap pushes pass brew style after publication.
-  preflight do
-    commands = ["ghostex", "gx"]
-    commands.each do |command|
-      command_candidates = [HOMEBREW_PREFIX/"bin/#{command}"]
-      ENV.fetch("PATH", "").split(File::PATH_SEPARATOR).each do |entry|
-        command_candidates << (Pathname(entry)/command) unless entry.empty?
-      end
+  # CDXC:Homebrew 2026-09-21: Homebrew 7.0.6 deprecated preflight/postflight
+  # blocks. Use command_wrapper plus *_steps so brew update stays clean.
+  command_wrapper "ghostex", content: <<~EOS
+    #!/bin/bash
+    set -euo pipefail
+    # CDXC:CliInstall 2026-06-12-09:31: Public PATH commands live outside Ghostex.app so macOS does not directly execute app-bundled shell scripts during policy assessment.
+    exec "#{appdir}/ghostex.app/Contents/Resources/CLI/ghostex" "$@"
+  EOS
+  command_wrapper "gx", content: <<~EOS
+    #!/bin/bash
+    set -euo pipefail
+    # CDXC:CliInstall 2026-06-12-09:31: Public PATH commands live outside Ghostex.app so macOS does not directly execute app-bundled shell scripts during policy assessment.
+    exec "#{appdir}/ghostex.app/Contents/Resources/CLI/ghostex" "$@"
+  EOS
 
-      command_candidates.uniq.each do |command_path|
-        next if [command_path.exist?, command_path.symlink?].none?
-
-        command_target = command_path.symlink? ? command_path.readlink.to_s : command_path.to_s
-        command_content = command_path.file? ? command_path.read : ""
-        if command_content.include?("CDXC:CliInstall 2026-06-12-09:31") &&
-           (command_content.include?("ghostex-cli.mjs") ||
-            command_content.include?("/Resources/CLI/ghostex"))
-          next
-        end
-        next if command_target.include?("ghostex.app/Contents/Resources/CLI/#{command}")
-        next if command_target.include?("ghostex.app/Contents/Resources/Web/cli/#{command}")
-        next if command == "ghostex" && command_target.include?("ghostex.app/Contents/MacOS/ghostex")
-
-        raise [
-          "Ghostex cannot install the #{command} CLI because #{command_path} already exists.",
-          "Remove or rename the existing #{command} command, then reinstall Ghostex.",
-        ].join(" ")
-      end
-    end
+  preflight_steps do
+    write_file "ghostex-cli-conflict-check.sh", <<~SH, append_newline: true
+      #!/bin/bash
+      set -euo pipefail
+      PREFIX="{{HOMEBREW_PREFIX}}"
+      ghostex_owned() {
+        local path="$1"
+        local cmd="$2"
+        local target=""
+        local content=""
+        if [[ -L "$path" ]]; then
+          target=$(readlink "$path" || true)
+        fi
+        if [[ -f "$path" ]]; then
+          content=$(cat "$path" 2>/dev/null || true)
+        fi
+        case "$content" in
+          *"CDXC:CliInstall 2026-06-12-09:31"*)
+            case "$content" in
+              *"ghostex-cli.mjs"*|*"/Resources/CLI/ghostex"*) return 0 ;;
+            esac
+            ;;
+        esac
+        case "$target" in
+          *".homebrew-command-wrappers/"*) return 0 ;;
+          *"ghostex.app/Contents/Resources/CLI/$cmd"*) return 0 ;;
+          *"ghostex.app/Contents/Resources/Web/cli/$cmd"*) return 0 ;;
+        esac
+        if [[ "$cmd" == "ghostex" ]]; then
+          case "$target" in
+            *"ghostex.app/Contents/MacOS/ghostex"*) return 0 ;;
+          esac
+        fi
+        return 1
+      }
+      for cmd in ghostex gx; do
+        candidates=("$PREFIX/bin/$cmd")
+        old_ifs="$IFS"
+        IFS=":"
+        for entry in $PATH; do
+          [[ -n "$entry" ]] && candidates+=("$entry/$cmd")
+        done
+        IFS="$old_ifs"
+        seen="|"
+        for path in "${candidates[@]}"; do
+          case "$seen" in
+            *"|$path|"*) continue ;;
+          esac
+          seen="${seen}${path}|"
+          if [[ ! -e "$path" && ! -L "$path" ]]; then
+            continue
+          fi
+          if ghostex_owned "$path" "$cmd"; then
+            continue
+          fi
+          echo "Ghostex cannot install the $cmd CLI because $path already exists. Remove or rename the existing $cmd command, then reinstall Ghostex." >&2
+          exit 1
+        done
+      done
+    SH
+    set_permissions "ghostex-cli-conflict-check.sh", "0755"
+    run "{{staged_path}}/ghostex-cli-conflict-check.sh"
   end
 
-  postflight do
-    cli_binary = "#{appdir}/ghostex.app/Contents/Resources/CLI/ghostex"
-    bin_dir = HOMEBREW_PREFIX/"bin"
-    policy_attributes = ["com.apple.provenance", "com.apple.quarantine"]
-    bin_dir.mkpath
-
-    ["ghostex", "gx"].each do |command|
-      command_path = bin_dir/command
-      if command_path.symlink?
-        command_path.delete
-      elsif command_path.exist?
-        command_content = command_path.file? ? command_path.read : ""
-        if command_content.include?("CDXC:CliInstall 2026-06-12-09:31") &&
-           (command_content.include?("ghostex-cli.mjs") ||
-            command_content.include?("/Resources/CLI/ghostex"))
-          command_path.delete
-        end
-      end
-
-      command_path.write <<~EOS
-        #!/bin/bash
-        set -euo pipefail
-        # CDXC:CliInstall 2026-06-12-09:31: Public PATH commands live outside Ghostex.app so macOS does not directly execute app-bundled shell scripts during policy assessment.
-        exec "#{cli_binary}" "$@"
-      EOS
-      command_path.chmod 0755
-      policy_attributes.each do |attribute|
-        system "/usr/bin/xattr", "-d", attribute, command_path.to_s, out: File::NULL, err: File::NULL
-      end
-    end
+  postflight_steps do
+    run "/usr/bin/xattr", args:         ["-d", "com.apple.provenance", "{{HOMEBREW_PREFIX}}/bin/ghostex"],
+                          must_succeed: false
+    run "/usr/bin/xattr", args:         ["-d", "com.apple.quarantine", "{{HOMEBREW_PREFIX}}/bin/ghostex"],
+                          must_succeed: false
+    run "/usr/bin/xattr", args:         ["-d", "com.apple.provenance", "{{HOMEBREW_PREFIX}}/bin/gx"],
+                          must_succeed: false
+    run "/usr/bin/xattr", args:         ["-d", "com.apple.quarantine", "{{HOMEBREW_PREFIX}}/bin/gx"],
+                          must_succeed: false
   end
 
-  uninstall_preflight do
-    ["ghostex", "gx"].each do |command|
-      command_path = HOMEBREW_PREFIX/"bin/#{command}"
-      next if !command_path.exist? || !command_path.file?
-
-      command_content = command_path.read
-      ghostex_owned_wrapper =
-        command_content.include?("CDXC:CliInstall 2026-06-12-09:31") &&
-        (command_content.include?("ghostex-cli.mjs") ||
-         command_content.include?("/Resources/CLI/ghostex"))
-      next unless ghostex_owned_wrapper
-
-      command_path.delete
-    end
+  uninstall_preflight_steps do
+    write_file "ghostex-cli-uninstall-wrappers.sh", <<~SH, append_newline: true
+      #!/bin/bash
+      set -euo pipefail
+      PREFIX="{{HOMEBREW_PREFIX}}"
+      for cmd in ghostex gx; do
+        path="$PREFIX/bin/$cmd"
+        if [[ -L "$path" || ! -f "$path" ]]; then
+          continue
+        fi
+        content=$(cat "$path" 2>/dev/null || true)
+        case "$content" in
+          *"CDXC:CliInstall 2026-06-12-09:31"*)
+            case "$content" in
+              *"ghostex-cli.mjs"*|*"/Resources/CLI/ghostex"*) rm -f "$path" ;;
+            esac
+            ;;
+        esac
+      done
+    SH
+    set_permissions "ghostex-cli-uninstall-wrappers.sh", "0755"
+    run "{{staged_path}}/ghostex-cli-uninstall-wrappers.sh", writable_paths: ["{{HOMEBREW_PREFIX}}/bin"]
   end
 
   zap trash: [
