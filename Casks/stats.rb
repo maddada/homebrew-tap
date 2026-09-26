@@ -7,7 +7,7 @@ cask "stats" do
   desc "macOS system monitor in your menu bar"
   homepage "https://github.com/maddada/stats"
 
-  depends_on macos: ">= :big_sur"
+  depends_on macos: :big_sur
 
   app "Stats.app"
 

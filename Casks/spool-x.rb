@@ -7,7 +7,7 @@ cask "spool-x" do
   desc "A local search engine for your thinking"
   homepage "https://github.com/maddada/spool"
 
-  depends_on macos: ">= :monterey"
+  depends_on macos: :monterey
 
   app "Spool.app"
 
