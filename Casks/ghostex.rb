@@ -19,8 +19,9 @@ cask "ghostex" do
   # CDXC:Cli 2026-06-12-09:31: Homebrew writes wrapper files in
   # HOMEBREW_PREFIX/bin instead of binary symlinks into Ghostex.app because
   # macOS can kill direct app-bundled script execution during policy assessment.
-  # CDXC:Homebrew 2026-09-21: Homebrew 7.0.6 deprecated preflight/postflight
-  # blocks. Use command_wrapper plus *_steps so brew update stays clean.
+  # CDXC:Release 2026-09-21 WHY: Homebrew 7.0.6 deprecated the Ruby
+  # preflight/postflight blocks, so the wrappers are command_wrapper stanzas and
+  # the checks are *_steps. Both need Homebrew 6.0.13 or newer.
   command_wrapper "ghostex", content: <<~EOS
     #!/bin/bash
     set -euo pipefail
@@ -58,7 +59,7 @@ cask "ghostex" do
             ;;
         esac
         case "$target" in
-          *".homebrew-command-wrappers/"*) return 0 ;;
+          *"/Caskroom/ghostex/"*"/.homebrew-command-wrappers/$cmd") return 0 ;;
           *"ghostex.app/Contents/Resources/CLI/$cmd"*) return 0 ;;
           *"ghostex.app/Contents/Resources/Web/cli/$cmd"*) return 0 ;;
         esac
@@ -100,13 +101,17 @@ cask "ghostex" do
 
   postflight_steps do
     run "/usr/bin/xattr", args:         ["-d", "com.apple.provenance", "{{HOMEBREW_PREFIX}}/bin/ghostex"],
-                          must_succeed: false
+                          must_succeed: false,
+                          print_stderr: false
     run "/usr/bin/xattr", args:         ["-d", "com.apple.quarantine", "{{HOMEBREW_PREFIX}}/bin/ghostex"],
-                          must_succeed: false
+                          must_succeed: false,
+                          print_stderr: false
     run "/usr/bin/xattr", args:         ["-d", "com.apple.provenance", "{{HOMEBREW_PREFIX}}/bin/gx"],
-                          must_succeed: false
+                          must_succeed: false,
+                          print_stderr: false
     run "/usr/bin/xattr", args:         ["-d", "com.apple.quarantine", "{{HOMEBREW_PREFIX}}/bin/gx"],
-                          must_succeed: false
+                          must_succeed: false,
+                          print_stderr: false
   end
 
   uninstall_preflight_steps do
