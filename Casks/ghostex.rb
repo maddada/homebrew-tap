@@ -1,11 +1,15 @@
 cask "ghostex" do
-  version "10.23.0"
-  sha256 "248878f26ed617d125d03f1e0acb47f06e69a2ae095ae09323e3702d83cca299"
+  version "10.24.0"
+  sha256 "e83f18121b1bb4dc7310180ab6f3be9be9723ba49bde82e1bcbbc6228e07072f"
 
   url "https://github.com/maddada/Ghostex/releases/download/v#{version}/ghostex-#{version}-arm64.dmg"
   name "Ghostex"
   desc "Workspace and session UI for agent terminals"
   homepage "https://github.com/maddada/Ghostex"
+
+  # Ghostex is in the official Homebrew cask (brew install --cask ghostex), which every release
+  # updates. This copy is no longer updated; the app keeps itself up to date through its own updater.
+  deprecate! date: "2026-10-16", because: "is now in the official Homebrew cask: brew install --cask ghostex"
 
   conflicts_with cask: "zmux"
   # CDXC:Release 2026-06-21-13:20: GitHub issue #49 showed current
